@@ -7,6 +7,8 @@ import com.pathik.financetracker.entity.Category;
 import com.pathik.financetracker.entity.CategoryType;
 import com.pathik.financetracker.entity.Transaction;
 import com.pathik.financetracker.entity.User;
+import com.pathik.financetracker.exception.BusinessException;
+import com.pathik.financetracker.exception.ResourceNotFoundException;
 import com.pathik.financetracker.mapper.TransactionMapper;
 import com.pathik.financetracker.repository.CategoryRepository;
 import com.pathik.financetracker.repository.TransactionRepository;
@@ -38,17 +40,17 @@ public class TransactionService {
 
     public TransactionResponse createTransaction(UUID userId, TransactionCreateRequest request) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
 
         Category category = categoryRepository.findById(request.categoryId())
-                .orElseThrow(() -> new RuntimeException("Category not found with id: " + request.categoryId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + request.categoryId()));
 
         if (!category.isActive()) {
-            throw new RuntimeException("Category is inactive");
+            throw new BusinessException("Category is inactive");
         }
 
         if (category.getType() != CategoryType.valueOf(request.type().name())) {
-            throw new RuntimeException("Transaction type does not match category type");
+            throw new BusinessException("Transaction type does not match category type");
         }
 
         Transaction transaction = new Transaction();
@@ -67,7 +69,7 @@ public class TransactionService {
 
     private Transaction getUserTransaction(UUID userId, UUID transactionId) {
         return transactionRepository.findByIdAndUserId(transactionId, userId)
-                .orElseThrow(() -> new RuntimeException("Transaction not found with id: " + transactionId));
+                .orElseThrow(() -> new ResourceNotFoundException("Transaction not found with id: " + transactionId));
     }
 
     public TransactionResponse getTransactionById(UUID userId, UUID transactionId) {
@@ -91,14 +93,14 @@ public class TransactionService {
         Transaction transaction = getUserTransaction(userId, transactionId);
 
         Category category = categoryRepository.findById(request.categoryId())
-                .orElseThrow(() -> new RuntimeException("Category not found with id: " + request.categoryId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + request.categoryId()));
 
         if (!category.isActive()) {
-            throw new RuntimeException("Category is inactive");
+            throw new BusinessException("Category is inactive");
         }
 
         if (category.getType() != CategoryType.valueOf(request.type().name())) {
-            throw new RuntimeException("Transaction type does not match category type");
+            throw new BusinessException("Transaction type does not match category type");
         }
 
         transaction.setCategory(category);
