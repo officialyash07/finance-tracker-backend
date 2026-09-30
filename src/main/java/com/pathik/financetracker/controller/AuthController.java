@@ -1,5 +1,7 @@
 package com.pathik.financetracker.controller;
 
+import com.pathik.financetracker.dto.auth.LoginResponse;
+import com.pathik.financetracker.dto.auth.UserLoginRequest;
 import com.pathik.financetracker.dto.auth.UserRegisterRequest;
 import com.pathik.financetracker.dto.auth.UserResponse;
 import com.pathik.financetracker.service.UserService;
@@ -21,5 +23,10 @@ public class AuthController {
     @ResponseStatus(HttpStatus.CREATED)
     public UserResponse register(@Valid @RequestBody UserRegisterRequest request){
         return userService.register(request);
+    }
+
+    @PostMapping("/login")
+    public LoginResponse login(@Valid @RequestBody UserLoginRequest request){
+        return userService.login(request);
     }
 }
