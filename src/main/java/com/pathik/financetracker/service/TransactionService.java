@@ -14,6 +14,7 @@ import com.pathik.financetracker.repository.CategoryRepository;
 import com.pathik.financetracker.repository.TransactionRepository;
 import com.pathik.financetracker.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -85,6 +86,7 @@ public class TransactionService {
                 .toList();
     }
 
+    @Transactional
     public TransactionResponse updateTransaction(
             UUID userId,
             UUID transactionId,
