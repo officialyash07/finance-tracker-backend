@@ -7,15 +7,30 @@ import java.util.UUID;
 
 public final class SecurityUtils {
 
-    private SecurityUtils(){}
+    private SecurityUtils() {
+    }
 
-    public static UUID getCurrentUserId(){
-        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+    public static UUID getCurrentUserId() {
 
-        if(authentication==null || !authentication.isAuthenticated()){
-            throw new IllegalStateException("User is not authenticated");
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null
+                || !authentication.isAuthenticated()) {
+
+            throw new IllegalStateException(
+                    "User is not authenticated"
+            );
         }
 
-        return (UUID) authentication.getPrincipal();
+        Object principal = authentication.getPrincipal();
+
+        if (!(principal instanceof AuthenticatedUser authenticatedUser)) {
+            throw new IllegalStateException(
+                    "Invalid authenticated user"
+            );
+        }
+
+        return authenticatedUser.userId();
     }
 }

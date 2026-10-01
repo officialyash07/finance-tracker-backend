@@ -42,9 +42,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             UUID userId = jwtService.extractUserId(token);
 
+            AuthenticatedUser authenticatedUser=new AuthenticatedUser(userId);
+
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(
-                            userId,
+                            authenticatedUser,
                             null,
                             Collections.emptyList()
                     );
