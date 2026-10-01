@@ -2,6 +2,7 @@ package com.pathik.financetracker.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -14,11 +15,11 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ErrorResponse handleResourceNotFound(
+    public ResponseEntity<ErrorResponse> handleResourceNotFound(
             ResourceNotFoundException exception,
             HttpServletRequest request
     ) {
-        return new ErrorResponse(
+        ErrorResponse errorResponse= new ErrorResponse(
                 Instant.now(),
                 HttpStatus.NOT_FOUND.value(),
                 "NOT_FOUND",
@@ -26,14 +27,16 @@ public class GlobalExceptionHandler {
                 request.getRequestURI(),
                 null
         );
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
     @ExceptionHandler(BusinessException.class)
-    public ErrorResponse handleBusinessException(
+    public ResponseEntity<ErrorResponse> handleBusinessException(
             BusinessException exception,
             HttpServletRequest request
     ) {
-        return new ErrorResponse(
+        ErrorResponse errorResponse= new ErrorResponse(
                 Instant.now(),
                 HttpStatus.BAD_REQUEST.value(),
                 "BUSINESS_ERROR",
@@ -41,10 +44,12 @@ public class GlobalExceptionHandler {
                 request.getRequestURI(),
                 null
         );
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ErrorResponse handleValidationException(
+    public ResponseEntity<ErrorResponse> handleValidationException(
             MethodArgumentNotValidException exception,
             HttpServletRequest request
     ) {
@@ -58,7 +63,7 @@ public class GlobalExceptionHandler {
                                 (existing, replacement) -> existing
                         ));
 
-        return new ErrorResponse(
+        ErrorResponse errorResponse = new ErrorResponse(
                 Instant.now(),
                 HttpStatus.BAD_REQUEST.value(),
                 "VALIDATION_ERROR",
@@ -66,5 +71,21 @@ public class GlobalExceptionHandler {
                 request.getRequestURI(),
                 fieldErrors
         );
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleUnexpectedException(Exception exception, HttpServletRequest request){
+        ErrorResponse errorResponse=new ErrorResponse(
+                Instant.now(),
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                "INTERNAL SERVER ERROR",
+                "An unexpected error occurred",
+                request.getRequestURI(),
+                null
+        );
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
 }

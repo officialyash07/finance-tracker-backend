@@ -1,15 +1,16 @@
 package com.pathik.financetracker.service;
 
-import com.pathik.financetracker.dto.auth.LoginResponse;
-import com.pathik.financetracker.dto.auth.UserLoginRequest;
-import com.pathik.financetracker.dto.auth.UserRegisterRequest;
-import com.pathik.financetracker.dto.auth.UserResponse;
+import com.pathik.financetracker.dto.auth.*;
 import com.pathik.financetracker.entity.User;
+import com.pathik.financetracker.exception.BusinessException;
+import com.pathik.financetracker.exception.ResourceNotFoundException;
 import com.pathik.financetracker.mapper.UserMapper;
 import com.pathik.financetracker.repository.UserRepository;
 import com.pathik.financetracker.security.JwtService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 public class UserService {
@@ -61,6 +62,39 @@ public class UserService {
         String token = jwtService.generateToken(user.getId(),user.getEmail());
 
         return new LoginResponse(token, "Bearer", jwtService.getExpirationMillis()/1000);
+    }
+
+    public UserResponse getCurrentUser(UUID userId) {
+        User user=userRepository.findById(userId)
+                .orElseThrow(()->new ResourceNotFoundException("User not found with id: "+userId));
+
+        return userMapper.toResponse(user);
+    }
+
+    public UserResponse updateCurrentUser(UUID userId, UserUpdateRequest request){
+        User user=userRepository.findById(userId)
+                .orElseThrow(()->new ResourceNotFoundException("User not found with id: "+userId));
+
+        user.setFirstName(request.firstName().trim());
+        user.setLastName(request.lastName().trim());
+        user.setPreferredCurrency(request.preferredCurrency());
+
+        User updatedUser=userRepository.save(user);
+
+        return userMapper.toResponse(updatedUser);
+    }
+
+    public void changePassword(UUID userId, ChangePasswordRequest request){
+        User user=userRepository.findById(userId)
+                .orElseThrow(()->new ResourceNotFoundException("User not found with id: "+userId));
+
+        if(!passwordEncoder.matches(request.currentPassword(),user.getPasswordHash())){
+            throw new BusinessException("Current password is incorrect");
+        }
+
+        user.setPasswordHash(passwordEncoder.encode(request.newPassword()));
+
+        userRepository.save(user);
     }
 }
 
