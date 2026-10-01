@@ -1,8 +1,6 @@
 package com.pathik.financetracker.service;
 
-import com.pathik.financetracker.dto.transaction.TransactionCreateRequest;
-import com.pathik.financetracker.dto.transaction.TransactionResponse;
-import com.pathik.financetracker.dto.transaction.TransactionUpdateRequest;
+import com.pathik.financetracker.dto.transaction.*;
 import com.pathik.financetracker.entity.Category;
 import com.pathik.financetracker.entity.CategoryType;
 import com.pathik.financetracker.entity.Transaction;
@@ -13,6 +11,8 @@ import com.pathik.financetracker.mapper.TransactionMapper;
 import com.pathik.financetracker.repository.CategoryRepository;
 import com.pathik.financetracker.repository.TransactionRepository;
 import com.pathik.financetracker.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -79,11 +79,29 @@ public class TransactionService {
         return transactionMapper.toResponse(transaction);
     }
 
-    public List<TransactionResponse> getAllTransactions(UUID userId) {
-        return transactionRepository.findAllByUserId(userId)
+    public TransactionPageResponse getAllTransactions(UUID userId, TransactionFilterRequest filter, Pageable pageable) {
+
+        Page<Transaction> transactionPage=transactionRepository.findTransactions(
+                userId,
+                filter.type(),
+                filter.categoryId(),
+                filter.fromDate(),
+                filter.toDate(),
+                pageable
+                );
+
+        List<TransactionResponse> transactions=transactionPage.getContent()
                 .stream()
                 .map(transactionMapper::toResponse)
                 .toList();
+
+        return new TransactionPageResponse(
+                transactions,
+                transactionPage.getNumber(),
+                transactionPage.getSize(),
+                transactionPage.getTotalElements(),
+                transactionPage.getTotalPages()
+        );
     }
 
     @Transactional

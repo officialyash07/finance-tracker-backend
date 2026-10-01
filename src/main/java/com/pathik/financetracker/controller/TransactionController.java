@@ -1,15 +1,15 @@
 package com.pathik.financetracker.controller;
 
-import com.pathik.financetracker.dto.transaction.TransactionCreateRequest;
-import com.pathik.financetracker.dto.transaction.TransactionResponse;
-import com.pathik.financetracker.dto.transaction.TransactionUpdateRequest;
+import com.pathik.financetracker.dto.transaction.*;
+import com.pathik.financetracker.entity.TransactionType;
 import com.pathik.financetracker.security.SecurityUtils;
 import com.pathik.financetracker.service.TransactionService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @RestController
@@ -30,10 +30,18 @@ public class TransactionController {
     }
 
     @GetMapping
-    public List<TransactionResponse> getAllTransactions(){
+    public TransactionPageResponse getAllTransactions(
+            @RequestParam(required = false) TransactionType type,
+            @RequestParam(required = false) UUID categoryId,
+            @RequestParam(required = false) LocalDate fromDate,
+            @RequestParam(required = false) LocalDate toDate,
+            Pageable pageable
+    ){
         UUID userId= SecurityUtils.getCurrentUserId();
 
-        return transactionService.getAllTransactions(userId);
+        TransactionFilterRequest filter = new TransactionFilterRequest(type, categoryId, fromDate, toDate);
+
+        return transactionService.getAllTransactions(userId,filter,pageable);
     }
 
     @GetMapping("/{transactionId}")
