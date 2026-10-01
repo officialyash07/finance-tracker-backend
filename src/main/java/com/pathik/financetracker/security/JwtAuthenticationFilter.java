@@ -1,5 +1,6 @@
 package com.pathik.financetracker.security;
 
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -54,7 +55,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext()
                     .setAuthentication(authentication);
 
-        } catch (Exception exception) {
+        } catch (JwtException | IllegalArgumentException exception) {
             SecurityContextHolder.clearContext();
         }
 
