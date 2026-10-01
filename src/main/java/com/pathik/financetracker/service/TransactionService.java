@@ -81,6 +81,15 @@ public class TransactionService {
 
     public TransactionPageResponse getAllTransactions(UUID userId, TransactionFilterRequest filter, Pageable pageable) {
 
+        if (filter.fromDate() != null
+                && filter.toDate() != null
+                && filter.fromDate().isAfter(filter.toDate())) {
+
+            throw new BusinessException(
+                    "fromDate must be before or equal to toDate"
+            );
+        }
+
         Page<Transaction> transactionPage=transactionRepository.findTransactions(
                 userId,
                 filter.type(),

@@ -21,11 +21,11 @@ public class CategoryController {
     }
 
     @GetMapping
-    public List<CategoryResponse> getCategories(@RequestParam(required = false) CategoryType categoryType){
-        if (categoryType==null){
+    public List<CategoryResponse> getCategories(@RequestParam(name = "type", required = false) CategoryType type){
+        if (type==null){
             return categoryService.getAllActiveCategories();
         }
 
-        return categoryService.getActiveCategoriesByType(categoryType);
+        return categoryService.getActiveCategoriesByType(type);
     }
 }

@@ -9,7 +9,7 @@ public record UserRegisterRequest(
 
         @NotBlank
         @Email
-        @Size(max = 300)
+        @Size(max = 320)
         String email,
 
         @NotBlank

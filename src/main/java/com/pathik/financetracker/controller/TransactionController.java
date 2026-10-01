@@ -2,14 +2,17 @@ package com.pathik.financetracker.controller;
 
 import com.pathik.financetracker.dto.transaction.*;
 import com.pathik.financetracker.entity.TransactionType;
+import com.pathik.financetracker.exception.BusinessException;
 import com.pathik.financetracker.security.SecurityUtils;
 import com.pathik.financetracker.service.TransactionService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.Set;
 import java.util.UUID;
 
 @RestController
@@ -20,6 +23,13 @@ public class TransactionController {
     public TransactionController(TransactionService transactionService) {
         this.transactionService = transactionService;
     }
+
+    private static final Set<String> ALLOWED_SORT_FIELDS = Set.of(
+            "transactionDate",
+            "amount",
+            "createdAt",
+            "updatedAt"
+    );
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -37,9 +47,22 @@ public class TransactionController {
             @RequestParam(required = false) LocalDate toDate,
             Pageable pageable
     ){
+
+        if (pageable.getPageSize() > 100) {
+            throw new BusinessException("Page size cannot exceed 100");
+        }
+
         UUID userId= SecurityUtils.getCurrentUserId();
 
         TransactionFilterRequest filter = new TransactionFilterRequest(type, categoryId, fromDate, toDate);
+
+        for (Sort.Order order : pageable.getSort()) {
+            if (!ALLOWED_SORT_FIELDS.contains(order.getProperty())) {
+                throw new BusinessException(
+                        "Sorting by '" + order.getProperty() + "' is not allowed"
+                );
+            }
+        }
 
         return transactionService.getAllTransactions(userId,filter,pageable);
     }

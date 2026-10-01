@@ -3,6 +3,8 @@ package com.pathik.financetracker.service;
 import com.pathik.financetracker.dto.auth.*;
 import com.pathik.financetracker.entity.User;
 import com.pathik.financetracker.exception.BusinessException;
+import com.pathik.financetracker.exception.DuplicateResourceException;
+import com.pathik.financetracker.exception.InvalidCredentialsException;
 import com.pathik.financetracker.exception.ResourceNotFoundException;
 import com.pathik.financetracker.mapper.UserMapper;
 import com.pathik.financetracker.repository.UserRepository;
@@ -10,6 +12,7 @@ import com.pathik.financetracker.security.JwtService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Locale;
 import java.util.UUID;
 
 @Service
@@ -35,7 +38,7 @@ public class UserService {
         String email=request.email().trim().toLowerCase();
 
         if(userRepository.existsByEmail(email)){
-            throw new IllegalArgumentException("Email is already registered.");
+            throw new DuplicateResourceException("Email is already registered.");
         }
 
         User user=new User();
@@ -50,13 +53,13 @@ public class UserService {
     }
 
     public LoginResponse login(UserLoginRequest request){
-        String email=request.email().trim().toLowerCase();
+        String email=request.email().trim().toLowerCase(Locale.ROOT);
 
         User user=userRepository.findByEmail(email)
-                .orElseThrow(()->new IllegalArgumentException("Invalid email or password"));
+                .orElseThrow(()->new InvalidCredentialsException("Invalid email or password"));
 
         if(!passwordEncoder.matches(request.password(), user.getPasswordHash())){
-            throw new IllegalArgumentException("Invalid email or password");
+            throw new InvalidCredentialsException("Invalid email or password");
         }
 
         String token = jwtService.generateToken(user.getId(),user.getEmail());
