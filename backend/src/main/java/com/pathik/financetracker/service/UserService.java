@@ -52,7 +52,7 @@ public class UserService {
         return userMapper.toResponse(userRepository.save(user));
     }
 
-    public LoginResponse login(UserLoginRequest request){
+    public LoginResult login(UserLoginRequest request){
         String email=request.email().trim().toLowerCase(Locale.ROOT);
 
         User user=userRepository.findByEmail(email)
@@ -64,7 +64,7 @@ public class UserService {
 
         String token = jwtService.generateToken(user.getId(),user.getEmail());
 
-        return new LoginResponse(token, "Bearer", jwtService.getExpirationMillis()/1000);
+        return new LoginResult(token, jwtService.getExpirationMillis() / 1000);
     }
 
     public UserResponse getCurrentUser(UUID userId) {
