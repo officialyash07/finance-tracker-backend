@@ -1,1 +1,141 @@
 @import "tailwindcss";
+
+@theme {
+    /* --------------------------------
+     Typography
+     -------------------------------- */
+
+    --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+    --font-mono: "Geist Mono", ui-monospace, monospace;
+
+    /* --------------------------------
+     Colors — Canvas / Surface
+     -------------------------------- */
+
+    --color-canvas: #f5f6f8;
+
+    --color-surface: #ffffff;
+    --color-surface-2: #f0f2f5;
+    --color-surface-3: #e8ebef;
+
+    /* --------------------------------
+     Borders
+     -------------------------------- */
+
+    --color-border: #e2e5ea;
+    --color-border-strong: #cbd0d8;
+
+    /* --------------------------------
+     Ink / Text
+     -------------------------------- */
+
+    --color-ink-950: #0b1220;
+    --color-ink-900: #111827;
+    --color-ink-700: #374151;
+    --color-ink-600: #4b5563;
+    --color-ink-500: #5f6878;
+    --color-ink-400: #8b93a1;
+    --color-ink-300: #b4bac4;
+
+    /* --------------------------------
+     Brand
+     -------------------------------- */
+
+    --color-brand-50: #eff1fd;
+    --color-brand-100: #dee2fb;
+    --color-brand-500: #4a5be3;
+    --color-brand-600: #3445d1;
+    --color-brand-700: #2a37b0;
+
+    /* --------------------------------
+     Positive / Income
+     -------------------------------- */
+
+    --color-pos-50: #eaf6ef;
+    --color-pos-100: #cdebda;
+    --color-pos-500: #1b9a60;
+    --color-pos-600: #12804f;
+    --color-pos-700: #0d6b41;
+
+    /* --------------------------------
+     Negative / Expense
+     -------------------------------- */
+
+    --color-neg-50: #fdeeec;
+    --color-neg-100: #f8d5d0;
+    --color-neg-500: #db4a3b;
+    --color-neg-600: #c0392b;
+    --color-neg-700: #a12c21;
+
+    /* --------------------------------
+     Warning
+     -------------------------------- */
+
+    --color-warn-50: #fdf5e6;
+    --color-warn-100: #f9e3bc;
+    --color-warn-500: #e39a1d;
+    --color-warn-600: #a86300;
+    --color-warn-700: #8a5200;
+
+    /* --------------------------------
+     Category palette
+     -------------------------------- */
+
+    --color-cat-1: #5468e8;
+    --color-cat-2: #e0803a;
+    --color-cat-3: #24a396;
+    --color-cat-4: #c4507e;
+    --color-cat-5: #8a68d6;
+    --color-cat-6: #c99a1e;
+    --color-cat-7: #3e95d3;
+    --color-cat-8: #7c8796;
+
+    /* --------------------------------
+     Border radius
+     -------------------------------- */
+
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+
+    /* --------------------------------
+     Shadows
+     -------------------------------- */
+
+    --shadow-xs: 0 1px 2px rgba(17, 24, 39, 0.05);
+
+    --shadow-sm:
+        0 1px 3px rgba(17, 24, 39, 0.07), 0 1px 2px -1px rgba(17, 24, 39, 0.05);
+
+    --shadow-md:
+        0 6px 16px -4px rgba(17, 24, 39, 0.1),
+        0 2px 4px -2px rgba(17, 24, 39, 0.05);
+
+    --shadow-lg:
+        0 24px 48px -12px rgba(17, 24, 39, 0.22),
+        0 4px 8px -4px rgba(17, 24, 39, 0.06);
+
+    --shadow-ring: 0 0 0 3px #dee2fb;
+
+    /* --------------------------------
+     Breakpoints
+     -------------------------------- */
+
+    --breakpoint-sm: 640px;
+    --breakpoint-lg: 1180px;
+}
+
+/* --------------------------------
+   Global base styles
+   -------------------------------- */
+
+html {
+    font-family: var(--font-sans);
+}
+
+body {
+    margin: 0;
+    background: var(--color-canvas);
+    color: var(--color-ink-950);
+}
