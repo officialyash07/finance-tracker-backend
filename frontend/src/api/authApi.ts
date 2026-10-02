@@ -1,4 +1,4 @@
-import appClient from "./client";
+import apiClient from "./client";
 import type {
     LoginRequest,
     LoginResponse,
@@ -9,7 +9,7 @@ import type {
 export async function register(
     request: RegisterRequest,
 ): Promise<UserResponse> {
-    const response = await appClient.post<UserResponse>(
+    const response = await apiClient.post<UserResponse>(
         "/auth/register",
         request,
     );
@@ -18,7 +18,7 @@ export async function register(
 }
 
 export async function login(request: LoginRequest): Promise<LoginResponse> {
-    const response = await appClient.post<LoginResponse>(
+    const response = await apiClient.post<LoginResponse>(
         "/auth/login",
         request,
     );

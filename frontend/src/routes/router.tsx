@@ -1,6 +1,7 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 
 import PlaceholderPage from "../pages/PlaceholderPage";
+import LoginPage from "../features/auth/LoginPage";
 
 export const router = createBrowserRouter([
     {
@@ -9,7 +10,7 @@ export const router = createBrowserRouter([
     },
     {
         path: "/login",
-        element: <PlaceholderPage title="Login" />,
+        element: <LoginPage />,
     },
     {
         path: "/register",
